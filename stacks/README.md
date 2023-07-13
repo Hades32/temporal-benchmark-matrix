@@ -10,8 +10,21 @@ Once the environment stack is deployed, unless you are a Temporal employee you w
 
 If you'd like to replicate one of our existing benchmarks, that is all you should need to adjust. You can then bring up the stack with `pulumi -s <stack name> up`.
 
+Create role `BenchmarkClusterAdmin` with admin capabilities.
+
 For example, to bring up an EKS cluster with Temporal running against an RDS postgres m6i.2xlarge instance you can use our existing stack configuration with:
 
 ```shell
-$ pulumi -s eks-rds-postgres-m6i-2xlarge up
+$ export PULUMI_CONFIG_PASSPHRASE=""
+
+$ pulumi -s YOUR_STACK up
+
+$ source ./fetch-kubeconfig YOUR_STACK
+
+# NOTE: doesn't set AWS profile of used. Need to fix by adding this to the $KUBECONFIG file
+#   env:
+#      - name: AWS_PROFILE
+#        value: staging
 ```
+
+- changing values need restart soak test -> no config map hashes

@@ -1,0 +1,83 @@
+encryptionsalt: v1:2OehxWopbd0=:v1:YZaAahJaE8EWnmpw:Ygo7ewgyYj0zdFZlzOCsS4s5J5HjfQ==
+config:
+  aws:profile: staging
+  aws:region: us-east-1
+  aws:assumeRole:
+    roleArn: arn:aws:iam::399785866736:role/BenchmarkClusterAdmin
+  aws:defaultTags:
+    tags:
+      Stack: eks-rds-aurora-mysql-medium
+  pulumi:template: kubernetes-go
+  temporal-benchmarks-k8s:AWS:
+    Region: us-east-1
+    AvailabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+    PrivateSubnetIds:
+    - subnet-0b1d6c18812b34500
+    - subnet-0a5e83e17c67cfab9
+    - subnet-067b766d167df3b03
+    PublicSubnetIds:
+    - subnet-0257612941070d76a
+    - subnet-043b43c3aed58e387
+    - subnet-0f2993e31a5e1c058
+    RdsSubnetGroupName: temporal-benchmark-rds-d750f39
+    Role: BenchmarkClusterAdmin
+    VpcId: vpc-01e956ccf80b40df9
+  temporal-benchmarks-k8s:Benchmark:
+    Workers:
+      CPU:
+        Request: 1
+      Memory:
+        Request: 1Gi
+      Pods: 3
+      WorkflowPollers: 10
+      ActivityPollers: 10
+    SoakTest:
+      ConcurrentWorkflows: 100
+      Pods: 1
+      CPU:
+        Request: 1
+      Memory:
+        Request: 1Gi
+  temporal-benchmarks-k8s:Cluster:
+    EKS:
+      NodeCount: 3
+      TemporalNodeCount: 3
+      NodeType: m5.2xlarge
+  temporal-benchmarks-k8s:Persistence:
+    RDS:
+      Engine: postgres
+      EngineVersion: 14.4
+      InstanceType: db.m7g.xlarge #db.r5.4xlarge
+      #Visibility:
+      #  OpenSearch:
+      #    EngineVersion: OpenSearch_2.3
+      #    InstanceType: m5.large.search
+  temporal-benchmarks-k8s:Temporal:
+    SetCPULimits: false
+    SetGoMaxProcs: false
+    Frontend:
+      Pods: 3
+      CPU:
+        Request: 1
+      Memory:
+        Request: 1Gi
+    History:
+      Pods: 3
+      CPU:
+        Request: 2
+      Memory:
+        Request: 2Gi
+      Shards: 2048
+    Matching:
+      Pods: 3
+      CPU:
+        Request: 1
+      Memory:
+        Request: 1Gi
+      TaskQueuePartitions: 4
+    Worker:
+      Pods: 3
+      CPU:
+        Request: 1
+      Memory:
+        Request: 1Gi
